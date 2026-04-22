@@ -119,5 +119,32 @@ resource "aws_lambda_function" "notifier" {
 
 
 
+# OrderProcessor Lambda triggered by OrderProcessor Queue
+resource "aws_lambda_event_source_mapping" "order_processor" {
+  event_source_arn = aws_sqs_queue.order_processor_queue.arn
+  function_name    = aws_lambda_function.order_processor.arn
+  batch_size       = 1
+}
+
+# InventoryProcessor Lambda triggered by Inventory Queue
+resource "aws_lambda_event_source_mapping" "inventory_processor" {
+  event_source_arn = aws_sqs_queue.inventory_processor_queue.arn
+  function_name    = aws_lambda_function.inventory_processor.arn
+  batch_size       = 1
+}
+
+# PaymentProcessor Lambda triggered by Payment Queue
+resource "aws_lambda_event_source_mapping" "payment_processor" {
+  event_source_arn = aws_sqs_queue.payment_processor_queue.arn
+  function_name    = aws_lambda_function.payment_processor.arn
+  batch_size       = 1
+}
+
+# Notifier Lambda triggered by Notifier Queue
+resource "aws_lambda_event_source_mapping" "notifier" {
+  event_source_arn = aws_sqs_queue.notifier_queue.arn
+  function_name    = aws_lambda_function.notifier.arn
+  batch_size       = 1
+}
 
 
