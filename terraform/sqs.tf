@@ -68,4 +68,5 @@ resource "aws_sqs_queue" "notifier_queue" {
         maxReceiveCount     = 3
         deadLetterTargetArn = aws_sqs_queue.notifier_dlq.arn
     })
+}
 
