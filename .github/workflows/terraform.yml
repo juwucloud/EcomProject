@@ -1,16 +1,7 @@
 name: Terraform Deploy
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'terraform/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'terraform/**'
+  workflow_dispatch:
 
 jobs:
   terraform:
@@ -26,6 +17,8 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.9
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -48,5 +41,4 @@ jobs:
         run: terraform plan -out=tfplan
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve tfplan
