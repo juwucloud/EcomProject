@@ -15,7 +15,7 @@ def lambda_handler(event, context):
         order_id = order['orderId']
 
         table.update_item(
-            Key={'orderId': order_id},
+            Key={'order_Id': order_id},
             UpdateExpression='SET #status = :status',
             ExpressionAttributeNames={'#status': 'status'},
             ExpressionAttributeValues={':status': 'PROCESSING'}
