@@ -25,13 +25,24 @@ resource "aws_s3_bucket_website_configuration" "website" {
 }
 
 # Upload HTML File
+# Template Data Source - liest HTML und ersetzt Variablen
+data "template_file" "html" {
+  template = file("${path.module}/../Frontend/sneaker-shop.html")
+
+  vars = {
+    api_url = aws_api_gateway_stage.prod.invoke_url
+  }
+}
+
+# Upload - uses rendered Template instead of direct file
 resource "aws_s3_object" "html" {
   bucket       = aws_s3_bucket.website.id
   key          = "sneaker-shop.html"
-  source       = "${path.module}/../Frontend/sneaker-shop.html"
+  content      = data.template_file.html.rendered 
   content_type = "text/html"
-  etag         = filemd5("${path.module}/../Frontend/sneaker-shop.html")
+  etag         = md5(data.template_file.html.rendered)  
 }
+
 
 
 # CloudFront Origin Access Control (OAC) 
