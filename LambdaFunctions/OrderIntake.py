@@ -18,7 +18,7 @@ def lambda_handler(event, context):
     timestamp = datetime.utcnow().isoformat()
 
     order = {
-        'orderId': order_id,
+        'order_Id': order_id,
         'customerId': body['customerId'],
         'items': body['items'],
         'totalAmount': body['totalAmount'],
