@@ -10,5 +10,6 @@ output "dynamodb_table_name" {
 
 output "sns_topic_arn" {
   description = "SNS Topic ARN for notifications"
-  value       = aws_sns_topic.order_confirmation.arn
+  value       = aws_sns_topic.order-confirmation.arn
+  
 }
