@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sneaker Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .product {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .product h3 {
+            margin: 0 0 10px 0;
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .total {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏃 Sneaker Shop</h1>
+
+    <div class="product">
+        <h3>Cooler Sneaker</h3>
+        <p>Preis: $129.99</p>
+        <label>Anzahl: <input type="number" id="qty1" min="0" value="0"></label>
+    </div>
+
+    <div class="product">
+        <h3>Lässiger Schlappen</h3>
+        <p>Preis: $179.99</p>
+        <label>Anzahl: <input type="number" id="qty2" min="0" value="0"></label>
+    </div>
+
+    <div class="product">
+        <h3>Schneller Turnschuh</h3>
+        <p>Preis: $99.99</p>
+        <label>Anzahl: <input type="number" id="qty3" min="0" value="0"></label>
+    </div>
+
+    <div class="total" id="total">Total: $0.00</div>
+
+    <button onclick="placeOrder()">Bestellung aufgeben</button>
+
+    <div id="result"></div>
+
+    <script>
+        const API_URL = 'https://v8u6gm16n9.execute-api.us-west-2.amazonaws.com/prod/orders';
+
+        const products = [
+            { id: 'cooler-sneaker', name: 'Cooler Sneaker', price: 129.99 },
+            { id: 'lässiger-schlappen', name: 'Lässiger Schlappen', price: 179.99 },
+            { id: 'schneller-turnschuh', name: 'Schneller Turnschuh', price: 99.99 }
+        ];
+
+        // Update total on input change
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', updateTotal);
+        });
+
+        function updateTotal() {
+            const qty1 = parseInt(document.getElementById('qty1').value) || 0;
+            const qty2 = parseInt(document.getElementById('qty2').value) || 0;
+            const qty3 = parseInt(document.getElementById('qty3').value) || 0;
+
+            const total = (qty1 * products[0].price) +
+                         (qty2 * products[1].price) +
+                         (qty3 * products[2].price);
+
+            document.getElementById('total').textContent = `Total: $${total.toFixed(2)}`;
+        }
+
+        async function placeOrder() {
+            const qty1 = parseInt(document.getElementById('qty1').value) || 0;
+            const qty2 = parseInt(document.getElementById('qty2').value) || 0;
+            const qty3 = parseInt(document.getElementById('qty3').value) || 0;
+
+            const items = [];
+            if (qty1 > 0) items.push({ productId: products[0].id, quantity: qty1, price: products[0].price });
+            if (qty2 > 0) items.push({ productId: products[1].id, quantity: qty2, price: products[1].price });
+            if (qty3 > 0) items.push({ productId: products[2].id, quantity: qty3, price: products[2].price });
+
+            if (items.length === 0) {
+                showResult('Bitte wähle mindestens ein Produkt!', 'error');
+                return;
+            }
+
+            const totalAmount = items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+
+            const order = {
+                customerId: 'web-customer-' + Date.now(),
+                items: items,
+                totalAmount: totalAmount
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(order)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showResult(`✅ Bestellung erfolgreich! Order ID: ${result.orderId}`, 'success');
+                    // Reset form
+                    document.getElementById('qty1').value = 0;
+                    document.getElementById('qty2').value = 0;
+                    document.getElementById('qty3').value = 0;
+                    updateTotal();
+                } else {
+                    showResult('❌ Fehler bei der Bestellung', 'error');
+                }
+            } catch (error) {
+                showResult('❌ Verbindungsfehler: ' + error.message, 'error');
+            }
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = type;
+        }
+    </script>
+</body>
+</html>
