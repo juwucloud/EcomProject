@@ -11,7 +11,7 @@ resource "aws_sqs_queue" "order_processor_queue" {
   visibility_timeout_seconds = 60
   message_retention_seconds  = 86400
 
-  redrive_allow_policy = jsonencode({
+  redrive_policy = jsonencode({
     maxReceiveCount     = 3
     deadLetterTargetArn = aws_sqs_queue.order_processor_dlq.arn
   })
