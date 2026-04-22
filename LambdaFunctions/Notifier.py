@@ -11,14 +11,14 @@ topic_arn = os.environ['SNS_TOPIC_ARN']
 def lambda_handler(event, context):
     for record in event['Records']:
         notification = json.loads(record['body'])
-        order_id = notification['orderId']
+        order_id = notification['order_id']
 
-        response = table.get_item(Key={'order_Id': order_id})
+        response = table.get_item(Key={'order_id': order_id})
         order = response.get('Item', {})
 
         if order.get('paymentStatus') == 'PAID' and order.get('inventoryStatus') == 'RESERVED':
             table.update_item(
-                Key={'order_Id': order_id},
+                Key={'order_id': order_id},
                 UpdateExpression='SET #status = :status',
                 ExpressionAttributeNames={'#status': 'status'},
                 ExpressionAttributeValues={':status': 'CONFIRMED'}
