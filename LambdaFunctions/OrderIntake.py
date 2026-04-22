@@ -34,6 +34,11 @@ def lambda_handler(event, context):
     )
 
     return {
-        'statusCode': 200,
-        'body': json.dumps({'order_id': order_id, 'status': 'PENDING'})
-    }
+    'statusCode': 200,
+    'headers': {
+        'Access-Control-Allow-Origin': os.environ.get('ALLOWED_ORIGIN', '*'),
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST,OPTIONS'
+    },
+    'body': json.dumps({'order_id': order_id, 'status': 'PENDING'})
+}

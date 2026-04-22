@@ -13,11 +13,12 @@ resource "aws_lambda_function" "order_intake" {
   handler          = "OrderIntake.lambda_handler"
   runtime          = "python3.12"
   source_code_hash = data.archive_file.order_intake.output_base64sha256
-
+  timeout         = 30 
   environment {
     variables = {
       ORDERS_TABLE    = aws_dynamodb_table.orders.name
       ORDER_QUEUE_URL = aws_sqs_queue.order_processor_queue.url
+      ALLOWED_ORIGINS   = "https://${aws_cloudfront_distribution.website.domain_name}" # CORS-Whitelist for Frontend
     }
   }
 }
