@@ -13,12 +13,12 @@ def lambda_handler(event, context):
         notification = json.loads(record['body'])
         order_id = notification['orderId']
 
-        response = table.get_item(Key={'orderId': order_id})
+        response = table.get_item(Key={'order_Id': order_id})
         order = response.get('Item', {})
 
         if order.get('paymentStatus') == 'PAID' and order.get('inventoryStatus') == 'RESERVED':
             table.update_item(
-                Key={'orderId': order_id},
+                Key={'order_Id': order_id},
                 UpdateExpression='SET #status = :status',
                 ExpressionAttributeNames={'#status': 'status'},
                 ExpressionAttributeValues={':status': 'CONFIRMED'}

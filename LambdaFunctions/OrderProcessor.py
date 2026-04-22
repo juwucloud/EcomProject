@@ -12,10 +12,10 @@ inventory_queue_url = os.environ['INVENTORY_QUEUE_URL']
 def lambda_handler(event, context):
     for record in event['Records']:
         order = json.loads(record['body'])
-        order_id = order['orderId']
+        order_id = order['order_id']
 
         table.update_item(
-            Key={'order_Id': order_id},
+            Key={'order_id': order_id},
             UpdateExpression='SET #status = :status',
             ExpressionAttributeNames={'#status': 'status'},
             ExpressionAttributeValues={':status': 'PROCESSING'}
