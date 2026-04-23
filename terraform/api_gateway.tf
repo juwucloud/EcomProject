@@ -47,6 +47,15 @@ resource "aws_api_gateway_deployment" "deployment" {
     aws_api_gateway_integration.options_integration
   ]
 
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_method.post_order.id,
+      aws_api_gateway_method.options_order.id,
+      aws_api_gateway_integration.lambda_integration.id,
+      aws_api_gateway_integration.options_integration.id,
+    ]))
+  }
+
   lifecycle {
     create_before_destroy = true
   }

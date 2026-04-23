@@ -26,13 +26,13 @@ resource "aws_s3_bucket_website_configuration" "website" {
 
 # Upload HTML File
 resource "aws_s3_object" "html" {
-  bucket       = aws_s3_bucket.website.id
-  key          = "sneaker-shop.html"
-  content      = templatefile("${path.module}/../Frontend/sneaker-shop.html", {
+  bucket = aws_s3_bucket.website.id
+  key    = "sneaker-shop.html"
+  content = templatefile("${path.module}/../Frontend/sneaker-shop.html", {
     api_url = aws_api_gateway_stage.prod.invoke_url
   })
   content_type = "text/html"
-  etag         = md5(templatefile("${path.module}/../Frontend/sneaker-shop.html", {
+  etag = md5(templatefile("${path.module}/../Frontend/sneaker-shop.html", {
     api_url = aws_api_gateway_stage.prod.invoke_url
   }))
 }

@@ -40,5 +40,5 @@ def lambda_handler(event, context):
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'POST,OPTIONS'
     },
-    'body': json.dumps({'order_id': order_id, 'status': 'PENDING'})
+    'body': json.dumps({'orderId': order_id, 'status': 'PENDING'})
 }

@@ -143,7 +143,7 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    showResult(`✅ Bestellung erfolgreich! Order ID: $${result.orderId}`, 'success');
+                    showResult(`✅ Bestellung erfolgreich! Order ID: $${result.order_id}`, 'success');
                     // Reset form
                     document.getElementById('qty1').value = 0;
                     document.getElementById('qty2').value = 0;
