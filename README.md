@@ -63,7 +63,7 @@ EcommerceProject/
 
 ### 1. Clone Repository
 ```bash
-git clone <repo-url>
+git clone https://github.com/juwucloud/EcomProject
 cd EcommerceProject
 ```
 
